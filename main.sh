@@ -1,12 +1,17 @@
 #!/bin/bash
 
-kubectl delete -f namespace.yml
-kubectl delete -f headless.service.yml
-kubectl delete -f statefulset.yml
-kubectl delete -f job.yml
+set -eou pipefail
 
+BASE_DIR=$(cd "$(dirname "$0")" && pwd)
 
-kubectl apply -f namespace.yml
-kubectl apply -f headless.service.yml
-kubectl apply -f statefulset.yml
-kubectl apply -f job.yml
+YAML_DIR="${BASE_DIR}/yaml"
+
+kubectl apply -f "$YAML_DIR/namespace.yml"
+kubectl apply -f "$YAML_DIR/pv.yml"
+kubectl apply -f "$YAML_DIR/headlessService.yml"
+kubectl apply -f "$YAML_DIR/statefulset.yml"
+
+sleep 90
+
+kubectl apply -f "$YAML_DIR/job.yml"
+
