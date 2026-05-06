@@ -1,0 +1,43 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv-0
+spec:
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  hostPath:
+    path: /mnt/data/pv-0
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv-1
+spec:
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  hostPath:
+    path: /mnt/data/pv-1
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv-2
+spec:
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  hostPath:
+    path: /mnt/data/pv-2
