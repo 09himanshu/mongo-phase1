@@ -25,7 +25,18 @@ spec:
             - mongod
             - "--replSet=rs0"
             - "--bind_ip=0.0.0.0"
-    volumeClaimTemplates:
-    - metadata:
-        name: mongodb-data
+          volumeMounts:
+            - mountPath: /data/db
+              name: mongodb-data
+  
+  volumeClaimTemplates:
+  - metadata:
+      name: mongodb-data
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 500Mi
+
 
