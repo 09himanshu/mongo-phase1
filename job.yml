@@ -7,27 +7,44 @@ spec:
   backoffLimit: 5
   template:
     spec:
-      serviceAccountName: default
       restartPolicy: Never
       containers:
       - name: mongo-init
-        image: mongo:6.0
+        image: mongo:latest
         command:
         - /bin/bash
         - -c
         - |
-          # Wait for all pods to be ready
-          sleep 10
-          
-          # Initialize replica set
-          mongosh --host mongodb-0.mongo-service.mongodb.svc.cluster.local:27017
-          --eval "
-              rs.initiate({
-                _id: 'rs0',
-                members: [
-                  { _id: 0, host: 'mongodb-0.mongo-service.mongodb.svc.cluster.local:27017' },
-                  { _id: 1, host: 'mongodb-1.mongo-service.mongodb.svc.cluster.local:27017' },
-                  { _id: 2, host: 'mongodb-2.mongo-service.mongodb.svc.cluster.local:27017' }
-                ]
-              })
-            " || true
+          echo "Waiting for MongoDB primary pod..."
+
+          until mongosh --host mongodb-0.mongo-service.mongodb.svc.cluster.local:27017 \
+            --eval "db.adminCommand('ping')" >/dev/null 2>&1; do
+            sleep 2
+          done
+
+          echo "MongoDB is ready"
+
+          echo "Checking replica set status..."
+
+          mongosh --host mongodb-0.mongo-service.mongodb.svc.cluster.local:27017 \
+            --eval "rs.status()" >/dev/null 2>&1
+
+          if [ $? -ne 0 ]; then
+            echo "Initializing replica set..."
+
+            mongosh --host mongodb-0.mongo-service.mongodb.svc.cluster.local:27017 \
+              --eval "
+                rs.initiate({
+                  _id: 'rs0',
+                  members: [
+                    { _id: 0, host: 'mongodb-0.mongo-service.mongodb.svc.cluster.local:27017' },
+                    { _id: 1, host: 'mongodb-1.mongo-service.mongodb.svc.cluster.local:27017' },
+                    { _id: 2, host: 'mongodb-2.mongo-service.mongodb.svc.cluster.local:27017' }
+                  ]
+                })
+              "
+          else
+            echo "Replica set already initialized"
+          fi
+
+          echo "Done"
