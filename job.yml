@@ -20,14 +20,14 @@ spec:
           sleep 10
           
           # Initialize replica set
-          mongosh --host mongodb-0.mongodb.mongodb.svc.cluster.local:27017
+          mongosh --host mongodb-0.mongo-service.mongodb.svc.cluster.local:27017
           --eval "
               rs.initiate({
                 _id: 'rs0',
                 members: [
-                  { _id: 0, host: 'mongodb-0.mongodb.mongodb.svc.cluster.local:27017' },
-                  { _id: 1, host: 'mongodb-1.mongodb.mongodb.svc.cluster.local:27017' },
-                  { _id: 2, host: 'mongodb-2.mongodb.mongodb.svc.cluster.local:27017' }
+                  { _id: 0, host: 'mongodb-0.mongo-service.mongodb.svc.cluster.local:27017' },
+                  { _id: 1, host: 'mongodb-1.mongo-service.mongodb.svc.cluster.local:27017' },
+                  { _id: 2, host: 'mongodb-2.mongo-service.mongodb.svc.cluster.local:27017' }
                 ]
               })
             " || true
