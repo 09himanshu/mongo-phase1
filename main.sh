@@ -14,4 +14,3 @@ kubectl apply -f "$YAML_DIR/statefulset.yml"
 sleep 90
 
 kubectl apply -f "$YAML_DIR/job.yml"
-
